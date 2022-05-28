@@ -1,0 +1,19 @@
+{
+    "name": "ctyurk15/leaft-engine",
+    "version": "0.3",
+    "description": "Light php template engine",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yurii Hrytsak"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ctyurk15\\LeaftEngine\\": "src"
+        }
+    }
+}
