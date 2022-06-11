@@ -14,17 +14,32 @@ class Leaft
     protected function parse($content)
     {
         $commands = [];
-        preg_match_all('/{@.*@}/i', $content, $commands);
+        preg_match_all('/{@(.*?)@}/s', $content, $commands);
 
         foreach ($commands[0] as $command)
         {
+            //variables
             if(preg_match('/\$/i', $command))
             {
                 preg_match('#{@.*\$(.+)@}#s', $command, $variable);
-                $variable_name =preg_replace('/\'|"| /', '', $variable[1]);
-                $content = str_replace($command, $this->variables[$variable_name], $content);
+                $variable_name = preg_replace('/\'|"| /', '', $variable[1]);
+                $variable_value = $this->variables[$variable_name];
+
+                //arrays
+                if(strpos($variable_name, '[') !== false)
+                {
+                    preg_match('/\[.*\]/i', $variable_name, $key);
+                    $key = preg_replace('/\[|\]/', '', $key);
+                    $variable_value = $this->variables[$variable_name][$key];
+                    $short_variable_name = substr($variable_name, 0, strpos($variable_name, '['));
+                    $variable_value = $this->variables[$short_variable_name][$key[0]];
+                    //echo $short_variable_name;
+                }
+
+                $content = str_replace($command, $variable_value, $content);
             }
 
+            //file includes
             if(preg_match('/include/i', $command))
             {
                 preg_match('#{@.*include(.+)@}#s', $command, $template_name);
